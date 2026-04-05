@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rui Trovoada — Brazilian Jiu-Jitsu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #c8a84b;
+      --gold-light: #e0c060;
+      --black: #0a0a0a;
+      --dark: #111;
+      --dark2: #1a1a1a;
+      --grey: #2a2a2a;
+      --text: #e0e0e0;
+      --text-dim: #888;
+      --white: #f5f5f5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 20px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+      transition: background 0.3s;
+    }
+    nav.scrolled { background: rgba(10,10,10,0.98); }
+    nav .logo {
+      font-family: 'Oswald', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    nav .links { display: flex; gap: 32px; list-style: none; }
+    nav .links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    nav .links a:hover { color: var(--gold); }
+    nav .cta-btn {
+      background: var(--gold);
+      color: var(--black);
+      padding: 10px 24px;
+      border: none;
+      font-family: 'Oswald', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.2s;
+    }
+    nav .cta-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(200,168,75,0.08) 0%, transparent 60%),
+        linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"48\" fill=\"none\" stroke=\"rgba(200,168,75,0.04)\" stroke-width=\"0.5\"/><circle cx=\"50\" cy=\"50\" r=\"30\" fill=\"none\" stroke=\"rgba(200,168,75,0.04)\" stroke-width=\"0.5\"/><circle cx=\"50\" cy=\"50\" r=\"10\" fill=\"none\" stroke=\"rgba(200,168,75,0.04)\" stroke-width=\"0.5\"/></svg>');
+      background-size: 400px;
+      opacity: 0.5;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    .hero-eyebrow {
+      font-family: 'Oswald', sans-serif;
+      font-size: 13px;
+      letter-spacing: 5px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+    .hero h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(60px, 10vw, 140px);
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 0.9;
+      letter-spacing: -2px;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+    .hero h1 span { color: var(--gold); }
+    .hero-sub {
+      font-size: 16px;
+      color: var(--text-dim);
+      margin-top: 20px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 60px;
+      justify-content: center;
+      margin-top: 60px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.8s forwards;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num {
+      font-family: 'Oswald', sans-serif;
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .hero-stat .label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 6px;
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 1s forwards, bounce 2s ease 1.5s infinite;
+    }
+    .hero-scroll span {
+      display: block;
+      width: 20px;
+      height: 30px;
+      border: 2px solid var(--gold);
+      border-radius: 10px;
+      position: relative;
+    }
+    .hero-scroll span::after {
+      content: '';
+      width: 4px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 2px;
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: scrollDot 2s ease infinite;
+    }
+
+    /* SECTION COMMON */
+    section { padding: 120px 60px; }
+    .section-eyebrow {
+      font-family: 'Oswald', sans-serif;
+      font-size: 12px;
+      letter-spacing: 5px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+    .section-divider {
+      width: 60px;
+      height: 3px;
+      background: var(--gold);
+      margin-bottom: 40px;
+    }
+
+    /* ABOUT */
+    .about { background: var(--dark); display: flex; gap: 80px; align-items: center; flex-wrap: wrap; }
+    .about-img {
+      flex: 1;
+      min-width: 300px;
+      height: 500px;
+      background: linear-gradient(135deg, var(--grey) 0%, var(--dark2) 100%);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, transparent 40%, rgba(200,168,75,0.15) 100%),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="none" stroke="rgba(200,168,75,0.2)" stroke-width="1"/><circle cx="100" cy="100" r="50" fill="none" stroke="rgba(200,168,75,0.15)" stroke-width="1"/><circle cx="100" cy="100" r="20" fill="none" stroke="rgba(200,168,75,0.2)" stroke-width="1"/><line x1="20" y1="100" x2="180" y2="100" stroke="rgba(200,168,75,0.1)" stroke-width="1"/><line x1="100" y1="20" x2="100" y2="180" stroke="rgba(200,168,75,0.1)" stroke-width="1"/></svg>');
+      background-size: cover;
+    }
+    .about-text { flex: 1.5; min-width: 300px; }
+    .about-text p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+      max-width: 560px;
+    }
+    .about-text p strong { color: var(--white); }
+    .belt-row {
+      display: flex;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    .belt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--dark2);
+      border: 1px solid var(--grey);
+      padding: 10px 18px;
+      border-radius: 4px;
+    }
+    .belt-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #f5f5f5;
+    }
+    .belt-dot.brown { background: #8B4513; }
+    .belt-dot.purple { background: #6A0dad; }
+    .belt-dot.blue { background: #1e4db7; }
+    .belt span { font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); }
+
+    /* RECORD */
+    .record { background: var(--black); }
+    .record-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .record-card {
+      background: var(--dark2);
+      border: 1px solid var(--grey);
+      border-radius: 4px;
+      padding: 36px 28px;
+      text-align: center;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .record-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+    .record-card .wins {
+      font-family: 'Oswald', sans-serif;
+      font-size: 64px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .record-card .type {
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 10px;
+    }
+    .record-card .sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    /* DISCIPLINES */
+    .disciplines { background: var(--dark); }
+    .disc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 50px;
+    }
+    .disc-card {
+      background: var(--dark2);
+      border: 1px solid var(--grey);
+      border-radius: 4px;
+      padding: 40px 30px;
+      transition: border-color 0.3s;
+    }
+    .disc-card:hover { border-color: var(--gold); }
+    .disc-icon {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+    .disc-card h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .disc-card p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-dim);
+    }
+
+    /* TIMELINE */
+    .timeline { background: var(--black); }
+    .tl { max-width: 700px; margin: 60px auto 0; position: relative; padding-left: 40px; }
+    .tl::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+    }
+    .tl-item { position: relative; margin-bottom: 40px; }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -44px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid var(--black);
+    }
+    .tl-year {
+      font-family: 'Oswald', sans-serif;
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .tl-item h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--white);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .tl-item p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+
+    /* CLASSES */
+    .classes { background: var(--dark); }
+    .class-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 50px; }
+    .class-card {
+      background: var(--dark2);
+      border: 1px solid var(--grey);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+    .class-card:hover { transform: translateY(-4px); }
+    .class-banner {
+      height: 160px;
+      background: linear-gradient(135deg, var(--grey) 0%, var(--dark) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+    }
+    .class-body { padding: 30px; }
+    .class-body h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .class-body .class-info {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 16px;
+    }
+    .class-body .class-info span {
+      font-size: 12px;
+      color: var(--gold);
+      font-family: 'Oswald', sans-serif;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .class-body p { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin-bottom: 20px; }
+    .class-body .price {
+      font-family: 'Oswald', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .class-body .price small { font-size: 12px; color: var(--text-dim); font-family: 'Inter'; font-weight: 400; }
+
+    /* GALLERY */
+    .gallery { background: var(--black); }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 200px);
+      gap: 12px;
+      margin-top: 50px;
+    }
+    .gallery-grid .g-item {
+      background: var(--dark2);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      opacity: 0.3;
+      transition: opacity 0.3s, transform 0.3s;
+      cursor: pointer;
+    }
+    .gallery-grid .g-item:hover { opacity: 0.6; transform: scale(1.02); }
+    .gallery-grid .g-item:nth-child(1) { grid-column: span 2; background: linear-gradient(135deg, #1a1510, var(--dark2)); }
+    .gallery-grid .g-item:nth-child(4) { grid-column: span 2; background: linear-gradient(135deg, #101518, var(--dark2)); }
+
+    /* CONTACT */
+    .contact { background: var(--dark); }
+    .contact-inner { display: flex; gap: 80px; flex-wrap: wrap; margin-top: 60px; }
+    .contact-info { flex: 1; min-width: 280px; }
+    .contact-item { margin-bottom: 30px; }
+    .contact-item h4 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .contact-item p, .contact-item a {
+      font-size: 16px;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .contact-item a:hover { color: var(--white); }
+    .contact-form { flex: 1.5; min-width: 300px; }
+    .contact-form form { display: flex; flex-direction: column; gap: 16px; }
+    .contact-form input, .contact-form textarea {
+      background: var(--dark2);
+      border: 1px solid var(--grey);
+      border-radius: 4px;
+      padding: 14px 18px;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s;
+      resize: vertical;
+    }
+    .contact-form input:focus, .contact-form textarea:focus { border-color: var(--gold); }
+    .contact-form textarea { min-height: 120px; }
+    .contact-form button {
+      background: var(--gold);
+      color: var(--black);
+      border: none;
+      padding: 16px 40px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .contact-form button:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+    /* FOOTER */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--grey);
+      padding: 40px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    footer .logo { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+    footer p { font-size: 13px; color: var(--text-dim); }
+    footer .socials { display: flex; gap: 20px; }
+    footer .socials a {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--grey);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 16px;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    footer .socials a:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scrollDot {
+      0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+      100% { transform: translateX(-50%) translateY(12px); opacity: 0; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 768px) {
+      section { padding: 80px 24px; }
+      nav { padding: 16px 24px; }
+      nav .links { display: none; }
+      .hero-stats { gap: 30px; flex-wrap: wrap; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-grid .g-item:nth-child(1),
+      .gallery-grid .g-item:nth-child(4) { grid-column: span 1; }
+      footer { padding: 30px 24px; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">RT // BJJ</div>
+  <ul class="links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#record">Record</a></li>
+    <li><a href="#disciplines">Styles</a></li>
+    <li><a href="#timeline">Journey</a></li>
+    <li><a href="#classes">Classes</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="cta-btn">Book a Session</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Brazilian Jiu-Jitsu Athlete & Coach</div>
+    <h1>Rui<br><span>Trovoada</span></h1>
+    <p class="hero-sub">Precision. Technique. Dominance.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">47</div>
+        <div class="label">Wins</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">3</div>
+        <div class="label">World Titles</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">8</div>
+        <div class="label">Years Training</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">2</div>
+        <div class="label">Belt Rank</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll"><span></span></div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-img reveal"></div>
+  <div class="about-text">
+    <div class="section-eyebrow reveal">About Me</div>
+    <h2 class="section-title reveal">Built on the<br>Mats, Forged<br>in Competition</h2>
+    <div class="section-divider reveal"></div>
+    <p class="reveal"><strong>I'm Rui Trovoada</strong> — a dedicated Brazilian Jiu-Jitsu practitioner with 8 years of training across Gi and No-Gi disciplines. My journey began on the mats of London and has taken me to competitions across Europe and beyond.</p>
+    <p class="reveal">Specialising in <strong>guard passing, leg locks, and submission hunting</strong>, I bring a methodical, analytical approach to BJJ — studying footage, dissecting technique, and constantly evolving my game.</p>
+    <p class="reveal">Off the mats, I coach both <strong>beginners and advanced athletes</strong>, helping students develop their own unique style and build the confidence that only comes from consistent training and real sparring.</p>
+    <div class="belt-row reveal">
+      <div class="belt"><div class="belt-dot brown"></div><span>Brown Belt</span></div>
+      <div class="belt"><div class="belt-dot purple"></div><span>No-Gi Purple</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- RECORD -->
+<section class="record" id="record">
+  <div class="section-eyebrow reveal">Competition Record</div>
+  <h2 class="section-title reveal">Numbers Don't<br>Lie</h2>
+  <div class="section-divider reveal"></div>
+  <div class="record-grid">
+    <div class="record-card reveal">
+      <div class="wins">47</div>
+      <div class="type">Total Wins</div>
+      <div class="sub">Gi + No-Gi combined</div>
+    </div>
+    <div class="record-card reveal">
+      <div class="wins">12</div>
+      <div class="type">Gold Medals</div>
+      <div class="sub">European & National titles</div>
+    </div>
+    <div class="record-card reveal">
+      <div class="wins">3</div>
+      <div class="type">World Titles</div>
+      <div class="sub">IBJJF World Championship</div>
+    </div>
+    <div class="record-card reveal">
+      <div class="wins">31</div>
+      <div class="type">Submissions</div>
+      <div class="sub">18 heel hooks, 13 triangles</div>
+    </div>
+    <div class="record-card reveal">
+      <div class="wins">94%</div>
+      <div class="type">Win Rate</div>
+      <div class="sub">Last 2 years</div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCIPLINES -->
+<section class="disciplines" id="disciplines">
+  <div class="section-eyebrow reveal">My Game</div>
+  <h2 class="section-title reveal">Styles &<br>Specialities</h2>
+  <div class="section-divider reveal"></div>
+  <div class="disc-grid">
+    <div class="disc-card reveal">
+      <div class="disc-icon">🛡️</div>
+      <h3>Guard Passing</h3>
+      <p>Pressure passing, knee slices, and tower passes. I break guards systematically and control top position to set up heavy ground-and-pound or submissions.</p>
+    </div>
+    <div class="disc-card reveal">
+      <div class="disc-icon">🔒</div>
+      <h3>Leg Locks</h3>
+      <p>Ashi garami specialist. Toe holds, knee bars, and heel hooks from outside positions. A dangerous finishing game from every angle.</p>
+    </div>
+    <div class="disc-card reveal">
+      <div class="disc-icon">⚡</div>
+      <h3>Submission Hunting</h3>
+      <p>Triangle chokes and guillotines from everywhere — top, bottom, standing. I hunt finishes from every position with relentless intent.</p>
+    </div>
+    <div class="disc-card reveal">
+      <div class="disc-icon">🧠</div>
+      <h3>Strategic Rolling</h3>
+      <p>Methodical pace control. I study opponents before matches, exploit weaknesses, and make tactical decisions that win on points when needed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline" id="timeline">
+  <div class="section-eyebrow reveal">The Journey</div>
+  <h2 class="section-title reveal">My BJJ Path</h2>
+  <div class="section-divider reveal"></div>
+  <div class="tl">
+    <div class="tl-item reveal">
+      <div class="tl-year">2018</div>
+      <h3>White Belt — First Roll</h3>
+      <p>Walked into my first BJJ class in London. Tapped out six times in the first session. Never looked back.</p>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">2020</div>
+      <h3>Blue Belt — First Gold</h3>
+      <p>Won my first competition at London Open. 4 subs in 4 fights. Discovered a love for competition.</p>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">2022</div>
+      <h3>Purple Belt — Going Full-Time</h3>
+      <p>Promoted to purple belt and began training twice daily. Moved academies to train under world champion coaches.</p>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">2024</div>
+      <h3>Brown Belt — World Champion</h3>
+      <p>Won IBJJF World Championship at Brown Belt. First world title. Still hungry.</p>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">2026</div>
+      <h3>Coaching & Expanding</h3>
+      <p>Taking on private students, running seminars across Europe, and building this portfolio. The journey continues.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLASSES -->
+<section class="classes" id="classes">
+  <div class="section-eyebrow reveal">Training</div>
+  <h2 class="section-title reveal">Classes &<br>Coaching</h2>
+  <div class="section-divider reveal"></div>
+  <div class="class-cards">
+    <div class="class-card reveal">
+      <div class="class-banner">🥋</div>
+      <div class="class-body">
+        <h3>Gi Fundamentals</h3>
+        <div class="class-info"><span>Mon / Wed / Fri</span><span>18:00–19:30</span></div>
+        <p>Learn the core techniques of Brazilian Jiu-Jitsu — grips, sweeps, escapes, and positional control. Perfect for beginners and intermediate white belts looking to build a solid foundation.</p>
+        <div class="price">£15 <small>/ session</small></div>
+      </div>
+    </div>
+    <div class="class-card reveal">
+      <div class="class-banner">⚡</div>
+      <div class="class-body">
+        <h3>No-Gi Sparring</h3>
+        <div class="class-info"><span>Tue / Thu</span><span>19:00–21:00</span></div>
+        <p>High-intensity positional sparring and live rolling. Focused on wrestling, leg locks, and the modern no-gi meta. Blue belt and above.</p>
+        <div class="price">£20 <small>/ session</small></div>
+      </div>
+    </div>
+    <div class="class-card reveal">
+      <div class="class-banner">👑</div>
+      <div class="class-body">
+        <h3>1-to-1 Coaching</h3>
+        <div class="class-info"><span>Flexible</span><span>60 or 90 min</span></div>
+        <p>Personalised training with technique breakdown, game planning, and competition prep. Tailored to your specific goals — whether that's winning medals or just surviving your first roll.</p>
+        <div class="price">£80 <small>/ hour</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="section-eyebrow reveal">Gallery</div>
+  <h2 class="section-title reveal">On the Mats</h2>
+  <div class="section-divider reveal"></div>
+  <div class="gallery-grid">
+    <div class="g-item">🥋</div>
+    <div class="g-item">🏆</div>
+    <div class="g-item">⚔️</div>
+    <div class="g-item">🥇</div>
+    <div class="g-item">💪</div>
+    <div class="g-item">🔥</div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="section-eyebrow reveal">Get in Touch</div>
+  <h2 class="section-title reveal">Let's Train</h2>
+  <div class="section-divider reveal"></div>
+  <div class="contact-inner">
+    <div class="contact-info">
+      <div class="contact-item reveal">
+        <h4>Location</h4>
+        <p>London, United Kingdom<br>Various academies — contact for details</p>
+      </div>
+      <div class="contact-item reveal">
+        <h4>Email</h4>
+        <a href="mailto:rui@bjjportfolio.com">rui@bjjportfolio.com</a>
+      </div>
+      <div class="contact-item reveal">
+        <h4>Instagram</h4>
+        <a href="#">@ruitrovoada_bjj</a>
+      </div>
+      <div class="contact-item reveal">
+        <h4>Book a Class</h4>
+        <p>Use the form or DM me on Instagram for class bookings and availability.</p>
+      </div>
+    </div>
+    <div class="contact-form reveal">
+      <form action="#" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <input type="text" name="subject" placeholder="Subject">
+        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">RT // BJJ</div>
+  <p>© 2026 Rui Trovoada. All rights reserved.</p>
+  <div class="socials">
+    <a href="#">IG</a>
+    <a href="#">YT</a>
+    <a href="#">TT</a>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('nav');
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => io.observe(el));
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Counter animation
+  const counters = document.querySelectorAll('.hero-stat .num');
+  counters.forEach(c => {
+    const target = parseInt(c.textContent);
+    const suffix = c.textContent.replace(/[0-9]/g, '');
+    let current = 0;
+    const step = Math.ceil(target / 40);
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(timer); }
+      c.textContent = current + suffix;
+    }, 40);
+  });
+
+  // Contact form
+  document.querySelector('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.textContent = 'Message Sent ✓';
+    btn.style.background = '#2a7d2a';
+    setTimeout(() => { btn.textContent = 'Send Message'; btn.style.background = ''; }, 3000);
+    e.target.reset();
+  });
+</script>
+
+</body>
+</html>
