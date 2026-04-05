@@ -1031,17 +1031,19 @@
     });
   });
 
-  // Counter animation
+  // Counter animation - only runs on pure number stats
   const counters = document.querySelectorAll('.hero-stat .num');
   counters.forEach(c => {
-    const target = parseInt(c.textContent);
-    const suffix = c.textContent.replace(/[0-9]/g, '');
+    const text = c.textContent.trim();
+    const isTextOnly = isNaN(parseInt(text));
+    if (isTextOnly) return; // skip text like "Purple Belt", "GI Only"
+    const target = parseInt(text);
     let current = 0;
     const step = Math.ceil(target / 40);
     const timer = setInterval(() => {
       current += step;
       if (current >= target) { current = target; clearInterval(timer); }
-      c.textContent = current + suffix;
+      c.textContent = current;
     }, 40);
   });
 
